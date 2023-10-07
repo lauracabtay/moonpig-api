@@ -16,8 +16,7 @@ export const SIZES_URL = 'https://moonpig.github.io/tech-test-node-backend/sizes
 
 export const getCardByIdHandler = async (req: Request, res: Response) => {
   try {
-    // If no size is passed, default to medium size card
-    const { cardId, sizeId="md" } = req.params;
+    const { cardId, sizeId } = req.params;
 
     // Requests are made in parallel
     const [cardsResponse, sizesResponse, templatesResponse] = await Promise.all([
@@ -34,12 +33,6 @@ export const getCardByIdHandler = async (req: Request, res: Response) => {
     if (!card) {
       // If card does not exist, send a 404 response
       res.status(404).json({ error: `${cardId} not found` });
-      return;
-    }
-
-    if (!card.sizes.includes(sizeId)) {
-      // If card size is not valid for given card id, send a 404 response
-      res.status(404).json({ error: `${cardId} not found in size ${sizeId}` });
       return;
     }
 
@@ -60,12 +53,13 @@ export const getCardByIdHandler = async (req: Request, res: Response) => {
 
     const pages: CardPage[] = card.pages.map((page: Page) => {
       const templateId = templates.find((t) => t.id === page.templateId).id;
+      const pageTitle = card.pages.find((page: Page) => page.templateId === templateId).title;
       const pageWidth = templates.find((t) => t.id === page.templateId).width;
       const pageHeight = templates.find((t) => t.id === page.templateId).height;
       const pageImageUrl = templates.find((t) => t.id === page.templateId).imageUrl;
 
       return {
-        title: templateId,
+        title: pageTitle,
         width: pageWidth,
         height: pageHeight,
         imageUrl: pageImageUrl
