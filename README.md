@@ -54,6 +54,8 @@ This endpoint returns a single card identified by its `id`. It takes an optional
 - `price` is calculated by the multiplying the `basePrice` of the card by the `priceMultiplier` from the selected size. If no size is provided it should default to the `basePrice`. The `basePrice` is the amount in pence and the result should be formatted as
   a string e.g. `"£2.00"`.
 
+**Note: if no size param is passed, or if card is not available in specified size, the response will purposefully exclude the `size` and `price` keys**
+
 Expected JSON response from `GET /cards/card001/gt`:
 
 ```json
