@@ -1,5 +1,6 @@
 import * as express from "express";
 import { getCardsHandler } from "./getCards/handler";
+import { getCardByIdHandler } from "./getCardById/handler";
 
 export const app = express()
 
@@ -8,6 +9,5 @@ app.set('json spaces', 2);
 // GET /cards
 app.get('/cards', getCardsHandler);
 
-app.get('/cards/:cardId/:sizeId?', () => {
-  // respond with card by id
-});
+// GET /cards/:cardId/:sizeId?
+app.get('/cards/:cardId/:sizeId?', getCardByIdHandler);
