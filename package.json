@@ -26,6 +26,7 @@
   },
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "test": "jest --watch"
+    "test": "jest ./*/unit/",
+    "test:e2e": "jest ./*/e2e/"
   }
 }
