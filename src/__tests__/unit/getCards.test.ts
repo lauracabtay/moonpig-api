@@ -3,7 +3,6 @@ import { getCardsHandler } from '../../getCards/handler';
 import { CARDS_URL, TEMPLATES_URL } from "../../dataSources";
 import axios from 'axios';
 
-
 jest.mock('axios');
 
 let req: Request;

@@ -1,7 +1,6 @@
 import * as request from 'supertest';
 import { app } from '../../server';
 
-
 describe('GET /cards)', () => {
   it('returns a 200 status code will all data', async () => {
     const response = await request(app).get('/cards')

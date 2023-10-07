@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
-import axios from 'axios';
-import { CARDS_URL, SIZES_URL, TEMPLATES_URL } from "../dataSources";
+import { CARDS_URL, SIZES_URL, TEMPLATES_URL, fetchData } from "../dataSources";
 import { 
   AvailableSizes,
-  Card,
   CardPage,
   Page,
   SingleCard,
@@ -11,71 +9,69 @@ import {
   Template
 } from "../interfaces";
 
-
 export const getCardByIdHandler = async (req: Request, res: Response) => {
   try {
     const { cardId, sizeId } = req.params;
 
-    // Requests are made in parallel
-    const [cardsResponse, sizesResponse, templatesResponse] = await Promise.all([
-      axios.get<Card[]>(CARDS_URL),
-      axios.get<Size[]>(SIZES_URL),
-      axios.get<Template[]>(TEMPLATES_URL)
-    ]);
+    const [cards, allSizes, templates] = await fetchData([
+      CARDS_URL,
+      SIZES_URL,
+      TEMPLATES_URL
+    ])
 
-    const card = cardsResponse.data.find(c => c.id === cardId);
-    const allSizes = sizesResponse.data;
-    const templates = templatesResponse.data;
+    const card = cards.find((c: { id: string; }) => c.id === cardId);
 
     if (!card) {
-      // If card does not exist, send a 404 response
-      res.status(404).json({ error: `${cardId} not found` });
-      return;
+      return res.status(404).json({ error: `${cardId} not found` });
     }
 
+    const hasValidSizeId = sizeId && card.sizes.includes(sizeId);
+
+    // Retrieve card available sizes
     const availableSizes: AvailableSizes[] = card.sizes.map((size: string) => {
-      const sizeId = allSizes.find((s) => s.id === size).id;
-      const sizeTitle = allSizes.find((s) => s.id === size).title;
+      const availableSize = allSizes.find((s: { id: string; }) => s.id === size)
 
       return {
-        id: sizeId,
-        title: sizeTitle
+        id: availableSize.id,
+        title: availableSize.title
       }
     });
 
+    // Retrieve card imageUrl
     const frontCover = card.pages.find((page: Page) => page.title === 'Front Cover');
     const imageUrl = templates.find((template: Template) => template.id === frontCover.templateId).imageUrl;
     
+    // Calculate card
     const sizeDetail = allSizes.find((size: Size) => size.id === sizeId) || undefined;
-    const sizePrice = sizeDetail ? sizeDetail.priceMultiplier : undefined;
+    const sizePrice = hasValidSizeId
+      ? `£${(card.basePrice / 100 * sizeDetail.priceMultiplier).toFixed(2)}`
+      : undefined;
 
+    // Retrieve card pages details
     const pages: CardPage[] = card.pages.map((page: Page) => {
-      const templateId = templates.find((t) => t.id === page.templateId).id;
-      const pageTitle = card.pages.find((page: Page) => page.templateId === templateId).title;
-      const pageWidth = templates.find((t) => t.id === page.templateId).width;
-      const pageHeight = templates.find((t) => t.id === page.templateId).height;
-      const pageImageUrl = templates.find((t) => t.id === page.templateId).imageUrl;
+      const template = templates.find((t: { id: string; }) => t.id === page.templateId)
+      const pageTitle = card.pages.find((page: Page) => page.templateId === template.id).title;
 
       return {
         title: pageTitle,
-        width: pageWidth,
-        height: pageHeight,
-        imageUrl: pageImageUrl
+        width: template.width,
+        height: template.height,
+        imageUrl: template.imageUrl
       }
     });
 
     const result: SingleCard = {
       title: card.title,
-      size: sizeId && card.sizes.includes(sizeId) ? sizeId : undefined,
-      availableSizes: availableSizes,
-      imageUrl: imageUrl,
-      price: sizeId && card.sizes.includes(sizeId) ? `£${(card.basePrice / 100 * sizePrice).toFixed(2)}` : undefined,
-      pages: pages,
+      size: hasValidSizeId ? sizeId : undefined,
+      availableSizes,
+      imageUrl,
+      price: sizePrice,
+      pages,
     }
 
-    res.json(result);
+    return res.json(result);
   }
   catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };

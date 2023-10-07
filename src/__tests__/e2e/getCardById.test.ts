@@ -1,7 +1,6 @@
 import * as request from 'supertest';
 import { app } from '../../server';
 
-
 describe('GET /cards/:cardId/:sizeId?)', () => {
   it('returns a 200 status code will all data | with valid params', async () => {
     const response = await request(app).get('/cards/card001/sm')

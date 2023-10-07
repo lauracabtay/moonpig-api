@@ -3,7 +3,6 @@ import { getCardByIdHandler } from '../../getCardById/handler';
 import { CARDS_URL, SIZES_URL, TEMPLATES_URL } from "../../dataSources";
 import axios from 'axios';
 
-
 jest.mock('axios');
 
 let req: Request;
