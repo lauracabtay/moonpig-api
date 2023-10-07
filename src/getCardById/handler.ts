@@ -49,7 +49,8 @@ export const getCardByIdHandler = async (req: Request, res: Response) => {
     const frontCover = card.pages.find((page: Page) => page.title === 'Front Cover');
     const imageUrl = templates.find((template: Template) => template.id === frontCover.templateId).imageUrl;
     
-    const sizePrice = allSizes.find((size: Size) => size.id === sizeId).priceMultiplier;
+    const sizeDetail = allSizes.find((size: Size) => size.id === sizeId) || undefined;
+    const sizePrice = sizeDetail ? sizeDetail.priceMultiplier : undefined;
 
     const pages: CardPage[] = card.pages.map((page: Page) => {
       const templateId = templates.find((t) => t.id === page.templateId).id;
@@ -68,10 +69,10 @@ export const getCardByIdHandler = async (req: Request, res: Response) => {
 
     const result: SingleCard = {
       title: card.title,
-      size: sizeId,
+      size: sizeId && card.sizes.includes(sizeId) ? sizeId : undefined,
       availableSizes: availableSizes,
       imageUrl: imageUrl,
-      price: `£${(card.basePrice / 100 * sizePrice).toFixed(2)}`,
+      price: sizeId && card.sizes.includes(sizeId) ? `£${(card.basePrice / 100 * sizePrice).toFixed(2)}` : undefined,
       pages: pages,
     }
 
