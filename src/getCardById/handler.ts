@@ -25,7 +25,6 @@ export const getCardByIdHandler = async (req: Request, res: Response) => {
       axios.get<Template[]>(TEMPLATES_URL)
     ]);
 
-    // TO DO: Handle optional size param
     const card = cardsResponse.data.find(c => c.id === cardId);
     const allSizes = sizesResponse.data;
     const templates = templatesResponse.data;
