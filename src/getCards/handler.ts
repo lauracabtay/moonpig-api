@@ -1,36 +1,17 @@
 import { Request, Response } from "express";
-import axios from 'axios';
-import { Card, Page, ResultCard } from "../interfaces/card";
-import { Template } from "../interfaces/template";
-
-export const CARDS_URL = 'https://moonpig.github.io/tech-test-node-backend/cards.json';
-export const TEMPLATES_URL = 'https://moonpig.github.io/tech-test-node-backend/templates.json';
+import { AllCards, Card, Page, Template } from "../interfaces";
+import { CARDS_URL, TEMPLATES_URL, fetchData } from "../dataSources";
 
 export const getCardsHandler = async (req: Request, res: Response) => {
   try {
-    // Requests are made in parallel
-    const [cardsResponse, templatesResponse] = await Promise.all([
-      axios.get<Card[]>(CARDS_URL),
-      axios.get<Template[]>(TEMPLATES_URL)
-    ]);
-
-    const cards = cardsResponse.data;
-    const templates = templatesResponse.data;
+    const [cards, templates] = await fetchData([CARDS_URL, TEMPLATES_URL])
 
     if (cards.length === 0) {
-      // If the card does not exist, send a 404 response
-      res.status(404).json({ error: 'No cards found' });
-      return;
+      return res.status(404).json({ error: 'No cards found' });
     }
 
-    const result: ResultCard[] = cards.map((card: Card) => {
-      // For each card, look for the page that has a title of 'front cover'.
+    const result: AllCards[] = cards.map((card: Card) => {
       const frontCover = card.pages.find((page: Page) => page.title === 'Front Cover');
-      /* 
-      For each template, look for the template that has the same id as the
-      frontCover template id, and fetch the imageUrl associated with this 
-      template id.
-      */
       const imageUrl = templates.find((template: Template) => template.id === frontCover.templateId).imageUrl;
       
       return {
@@ -40,8 +21,8 @@ export const getCardsHandler = async (req: Request, res: Response) => {
       };
     });
 
-    res.json(result);
+    return res.json(result);
   } catch (error) {
-    res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };

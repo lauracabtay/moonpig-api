@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getCardsHandler } from '../../getCards/handler';
-import { CARDS_URL, TEMPLATES_URL } from '../../getCards/handler';
+import { CARDS_URL, TEMPLATES_URL } from "../../dataSources";
 import axios from 'axios';
 
 jest.mock('axios');
