@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import axios from 'axios';
+import { CARDS_URL, SIZES_URL, TEMPLATES_URL } from "../dataSources";
 import { 
   AvailableSizes,
   Card,
@@ -10,9 +11,6 @@ import {
   Template
 } from "../interfaces";
 
-export const CARDS_URL = 'https://moonpig.github.io/tech-test-node-backend/cards.json';
-export const TEMPLATES_URL = 'https://moonpig.github.io/tech-test-node-backend/templates.json';
-export const SIZES_URL = 'https://moonpig.github.io/tech-test-node-backend/sizes.json';
 
 export const getCardByIdHandler = async (req: Request, res: Response) => {
   try {

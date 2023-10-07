@@ -2,9 +2,8 @@ import { Request, Response } from "express";
 import axios from 'axios';
 import { AllCards, Card, Page } from "../interfaces";
 import { Template } from "../interfaces";
+import { CARDS_URL, TEMPLATES_URL } from "../dataSources";
 
-export const CARDS_URL = 'https://moonpig.github.io/tech-test-node-backend/cards.json';
-export const TEMPLATES_URL = 'https://moonpig.github.io/tech-test-node-backend/templates.json';
 
 export const getCardsHandler = async (req: Request, res: Response) => {
   try {
