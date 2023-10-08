@@ -1,4 +1,3 @@
-# .github/actions/setup-project/action.yml
 name: 'Setup Project'
 description: 'Checkout, setup node, and install dependencies'
 inputs:
