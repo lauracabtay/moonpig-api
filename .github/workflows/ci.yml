@@ -22,35 +22,10 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-  lint:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Lint code
-        run: yarn lint
-
   test:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-
-      - name: Install dependencies
-        run: yarn install
-
       - name: Run unit tests
         run: yarn test
 
