@@ -6,6 +6,9 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        
       - uses: ./.github/actions/action.yml
         with:
           node-version: '16.x'
@@ -15,6 +18,9 @@ jobs:
   e2e-tests:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+          uses: actions/checkout@v2
+
       - uses: ./.github/actions/action.yml
         with:
           node-version: '16.x'
