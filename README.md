@@ -1,4 +1,4 @@
-![alt text](img/moonpig-logo.png 'Moonpig')
+![alt text](img/moonpig-logo.png "Moonpig")
 
 # Description
 
