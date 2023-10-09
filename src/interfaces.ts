@@ -1,22 +1,22 @@
-export interface Template {
+export type Template = {
   id: string;
   width: number;
   height: number;
   imageUrl: string;
 }
 
-export interface Size {
+export type Size = {
   id: string;
   title: string;
   priceMultiplier: number;
 }
 
-export interface Page {
+export type Page = {
   title: string;
   templateId: string;
 }
 
-export interface Card {
+export type Card = {
   id: string;
   title: string;
   sizes: string[];
@@ -24,25 +24,25 @@ export interface Card {
   pages: Page[];
 }
 
-export interface CardPage {
+export type CardPage = {
   title: string;
   width: number;
   height: number;
   imageUrl: string;
 }
 
-export interface AllCards {
+export type AllCards = {
   title: string;
   imageUrl: string;
   url: string;
 }
 
-export interface AvailableSizes {
+export type AvailableSizes = {
   id: string;
   title: string;
 }
 
-export interface SingleCard {
+export type SingleCard = {
   title: string;
   size: string | undefined;
   availableSizes: AvailableSizes[];
